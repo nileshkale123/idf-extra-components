@@ -163,6 +163,43 @@ esp_err_t esp_encrypted_img_decrypt_abort(esp_decrypt_handle_t ctx);
 */
 uint16_t esp_encrypted_img_get_header_size(void);
 
+/**
+ * @brief Serialize the decrypt handle to a buffer for storing in NVS
+ *
+ * This function serializes the decrypt handle into a buffer that can be stored in NVS.
+ * The caller is responsible for freeing the allocated buffer.
+ *
+ * @param[in]   decrypt_handle   The decrypt handle to serialize
+ * @param[out]  buffer           Pointer to a buffer pointer where the serialized data will be stored
+ * @param[out]  buffer_len       Pointer to a variable where the length of the serialized data will be stored
+ *
+ * @return
+ *    - ESP_OK               Success
+ *    - ESP_ERR_INVALID_ARG  Invalid argument
+ *    - ESP_ERR_NO_MEM       Memory allocation failed
+ */
+esp_err_t esp_encrypted_img_decrypt_handle_to_nvs(esp_decrypt_handle_t decrypt_handle, uint8_t **buffer, size_t *buffer_len);
+
+/**
+ * @brief Deserialize a buffer from NVS into a decrypt handle
+ *
+ * This function deserializes a buffer stored in NVS back into a decrypt handle.
+ * The caller is responsible for freeing the decrypt handle when it's no longer needed.
+ *
+ * @param[in]   buffer           Pointer to the buffer containing the serialized data
+ * @param[in]   buffer_len       Length of the serialized data buffer
+ * @param[out]  decrypt_handle   Pointer to a decrypt handle pointer where the deserialized handle will be stored
+ *
+ * @return
+ *    - ESP_OK               Success
+ *    - ESP_ERR_INVALID_ARG  Invalid argument
+ *    - ESP_ERR_NO_MEM       Memory allocation failed
+ *    - ESP_ERR_INVALID_SIZE Buffer size is too small
+ */
+esp_err_t esp_encrypted_img_decrypt_handle_from_nvs(const uint8_t *buffer, size_t buffer_len, esp_decrypt_handle_t *decrypt_handle);
+
+
+
 #ifdef __cplusplus
 }
 #endif
