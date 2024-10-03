@@ -1,0 +1,23 @@
+Workflow and Issue Description
+
+    Workflow: In the encrypted image workflow, the image consists of a 512-byte header, followed by the actual encrypted image content.
+    In the test, device begins downloading the image without any restart until it reaches 530 bytes. 
+    Once the downloaded data size exceeds 530 bytes, the content is saved in NVS using the save_ota_state_to_nvs() function, followed by an explicit device restart using esp_restart(). 
+    On reboot, the stored context is retrieved from NVS using the load_decrypt_handle_from_nvs() function to resume the process.
+
+Issue Description: 
+    During execution, the Cache_buf_len increases until it reaches 15 and then resets to 0 repeatedly, creating a loop. At this stage, the following error was observed:
+
+    Guru Meditation Error: Core  0 panic'ed (Store access fault). Exception was unhandled.
+    --- Stack dump detected ---
+    Core  0 register dump:
+    MEPC    : 0x400587da  RA      : 0x4200f1c0  SP      : 0x3fc93c20  GP      : 0x3fc8d000  
+    --- 0x400587da: memcpy in ROM
+    0x4200f1c0: process_bin at /home/nilesh/esp/extra_components/idf-extra-components/esp_encrypted_img/src/esp_encrypted_img.c:202
+
+Steps to Reproduce:
+
+    Navigate to the directory: idf-extra-components/test_app
+    Set the target to esp32c3.
+    Build the project.
+    Flash the firmware and monitor the device.
